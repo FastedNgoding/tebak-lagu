@@ -280,7 +280,7 @@ body {
 
 <script>
 const SONGS = [
-  { title: "The Fade Of Ophelia", artist: "Taylor Swift", url: "https://fine.sunproxy.net/file/dGpCeDJ4aHhQTnZIb1JEYUd5LytMUWM0WTNoODNodFErQkYzWnhaWXZsQ29OT0U5cVFHSmY5Qi9BU0ZocDROR1JjaCt2VzNwUm1vTTNPN3UvZWpLR2ZYNnZlMStObFdDNlpmUlVKc24vd2M9/Taylor_Swift_-_The_Fate_Of_Ophelia_(SkySound.cc).mp3", start: 53 },
+  { title: "The Fate Of Ophelia", artist: "Taylor Swift", url: "https://fine.sunproxy.net/file/dGpCeDJ4aHhQTnZIb1JEYUd5LytMUWM0WTNoODNodFErQkYzWnhaWXZsQ29OT0U5cVFHSmY5Qi9BU0ZocDROR1JjaCt2VzNwUm1vTTNPN3UvZWpLR2ZYNnZlMStObFdDNlpmUlVKc24vd2M9/Taylor_Swift_-_The_Fate_Of_Ophelia_(SkySound.cc).mp3", start: 53 },
   { title: "Treat Your Better", artist: "Shawn mendess", url: "https://cs1.mp3.pm/download/162537826/R21HZngrVG1DMW55U2FlVzdvYk12ZmNOOVRvVUprY0lYUm1IaXR1OUlyUzlTSk5hVzhxTVordVFQdHd3M2ZKanZieW9yUEs5QThaMHVZRFZxSjgvY05GdzMyYXc1Y2tHSGxoZExQVndBV28zbkk2SzEzM1pKUHhLODhjOGppMWM/shawn_mendes_-_treat_you_better_-_shawn_mendes_-_treat_you_better_(mp3.pm).mp3", start: 10 },
   { title: "We Can't Be Frieds", artist: "Ariana Grande", url: "https://fine.sunproxy.net/file/dGpCeDJ4aHhQTnZIb1JEYUd5LytMUWM0WTNoODNodFErQkYzWnhaWXZsQ29OT0U5cVFHSmY5Qi9BU0ZocDROR1U1d1c4K290RjYwLzJyVjFFWGkwck5HcW5CRDBuUHFTQ3lBRlNheS9jb289/Ariana_Grande_-_We_Can_t_Be_Friends_Wait_For_Your_Love_2024_(SkySound.cc).mp3", start: 40 },
   { title: "Saturn", artist: "SZA", url: "https://fine.sunproxy.net/file/dGpCeDJ4aHhQTnZIb1JEYUd5LytMUWM0WTNoODNodFErQkYzWnhaWXZsQ29OT0U5cVFHSmY5Qi9BU0ZocDROR0ZBbGR4em9JYVFyTHRkZjJMNHlRRXZpUlVLRWIzU0lKMzhjUWMxMDdqWUk9/SZA_-_Saturn_Acapella_(SkySound.cc).mp3", start: 55 },
@@ -290,9 +290,23 @@ const SONGS = [
   { title: "Dari Planet Lain", artist: "Sal Priadi", url: "sounds/dari-planet-lain.mp3", start: 60 },
   { title: "Satu Bulan", artist: "Bernadya", url: "sounds/satu-bulan.mp3", start: 80 },
   { title: "Pesan Terakhir", artist: "Lyodra", url: "sounds/pesan-terakhir.mp3", start: 28 },
-  { title: "Rayuan Perempuan GIla", artist: "Nadin Amizah", url: "sounds/rayuan-perempuan-gila.mp3", start: 11 },
-  // { title: "Someone Like You", artist: "Adele", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-11.mp3", start: 8 },
-  // { title: "Sang Dewi", artist: "Lyodra", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-12.mp3", start: 6 },
+  { title: "Rayuan Perempuan Gila", artist: "Nadin Amizah", url: "sounds/rayuan-perempuan-gila.mp3", start: 31 },
+
+  // Tambahan lagu baru
+  { title: "Ode to The Nameless Martyr", artist: "Wuthering Waves", url: "https://fine.sunproxy.net/file/dGpCeDJ4aHhQTnZIb1JEYUd5LytMUWM0WTNoODNodFErQkYzWnhaWXZsQ29OT0U5cVFHSmY5Qi9BU0ZocDROR0c4b1ZTTFNJV25uRm5lWk1FbmZJL2VwOFlTWmp2eWNaZGI5R0J6dmNwZ3M9/jixwang_Thena_A_Tarokiki_VISION_SOUND_-_Ode_to_the_Nameless_Martyr_(SkySound.cc).mp3", start: 60 },
+  { title: "Against The Tide", artist: "Wuthering Waves", url: "https://fine.sunproxy.net/file/dGpCeDJ4aHhQTnZIb1JEYUd5LytMUWM0WTNoODNodFErQkYzWnhaWXZsQ29OT0U5cVFHSmY5Qi9BU0ZocDROR3g0S0srZElvbmdreDA5N01velFJdEFEZFJPb3VyYTZKeWdNemhyZU1sR009/Wuthering_Waves_-_Wuthering_Waves_EP2.4_Cartethyia_-_Against_the_Tide_(SkySound.cc).mp3", start: 60 },
+  { title: "Elusive Seas", artist: "Wuthering Waves", url: "https://fine.sunproxy.net/file/dGpCeDJ4aHhQTnZIb1JEYUd5LytMUWM0WTNoODNodFErQkYzWnhaWXZsQ29OT0U5cVFHSmY5Qi9BU0ZocDROR0lWWVEzOEE0a09wN0dnZEViN2xyVWNUWFJBS0tSdU9ia1pacEdYbEdLTk09/Wuthering_Waves_-_Wuthering_Waves_EP2.2_Cantarella_-_Elusive_Seas_(SkySound.cc).mp3", start: 60 },
+  { title: "Ice and Blood", artist: "Vanguard Sound GhostFinal feat. Kinoko", url: "https://fine.sunproxy.net/file/dGpCeDJ4aHhQTnZIb1JEYUd5LytMUWM0WTNoODNodFErQkYzWnhaWXZsQ29OT0U5cVFHSmY5Qi9BU0ZocDROR2NFaXZCRDUvTHVCc1k5c0krU0VpQ3JzQ0JZTFU4QUkzRTB0QWUyZUdIK3c9/Vanguard_Sound_GhostFinal_-2064_feat._Kinoko_-_Ice_Blood_(SkySound.cc).mp3", start: 60 },
+  { title: "Target for Love (EN Version)", artist: "Lee Jin Ah", url: "https://fine.sunproxy.net/file/dGpCeDJ4aHhQTnZIb1JEYUd5LytMUWM0WTNoODNodFErQkYzWnhaWXZsQ29OT0U5cVFHSmY5Qi9BU0ZocDROR2ZhUWtobG4vdkZ6N2xXN3hPMVRHV3JxcURPUE9XUk5oS0p5VU9RS2xLM289/Lee_Jin_Ah_-_Target_for_Love_EN_version_(SkySound.cc).mp3", start: 60 },
+  { title: "Hujan", artist: "Utopia", url: "https://fine.sunproxy.net/file/dGpCeDJ4aHhQTnZIb1JEYUd5LytMUWM0WTNoOD3odFErQkYzWnhaWXZsQ29OT0U5cVFHSmY5Qi9BU0ZocDROR0FVOU9pbWtXcHZPTGRTN2Uyd0dTaXpzWUl5SnVQRUErT3VhTmpTWEUwdzA9/Utopia_-_Hujan_(SkySound.cc).mp3", start: 60 },
+  { title: "Akad", artist: "Payung Teduh", url: "https://fine.sunproxy.net/file/dGpCeDJ4aHhQTnZIb1JEYUd5LytMUWM0WTNoODNodFErQkYzWnhaWXZsQ29OT0U5cVFHSmY5Qi9BU0ZocDROR0FVOU9pbWtXcHZPTGRTN2Uyd0dTaXdPd1Y0bW4veFcrYlFiVzZ4ajgzWDg9/Payung_Teduh_-_Payung_Teduh_-_Akad_Official_Music_Video_(SkySound.cc).mp3", start: 60 },
+  { title: "Tuan", artist: ".Feast", url: "https://fine.sunproxy.net/file/dGpCeDJ4aHhQTnZIb1JEYUd5LytMUWM0WTNoODNodFErQkYzWnhaWXZsQ29OT0U5cVFHSmY5Qi9BU0ZocDROR29LZkc2bHpWUU9SbDUrWUpMV1FDUTNLUExPMXowL2g1QVNJQ1BkcmlmS0k9/.Feast_-_o_Tuan_(SkySound.cc).mp3", start: 60 },
+  { title: "Baby One More Time", artist: "Britney Spears", url: "https://fine.sunproxy.net/file/dGpCeDJ4aHhQTnZIb1JEYUd5LytMUWM0WTNoODNodFErQkYzWnhaWXZsQ29OT0U5cVFHSmY5Qi9BU0ZocDROR0dKMGJiNWlyZ3FkaWtjVEpycEF3VDhxWkxxMHhUWFozTEZGMTZ2OFZrSWc9/Britney_Spears_-_...Baby_One_More_Time_(SkySound.cc).mp3", start: 60 },
+  { title: "Max Verstappen", artist: "Carte Blanq", url: "https://fine.sunproxy.net/file/dGpCeDJ4aHhQTnZIb1JEYUd5LytMUWM0WTNoODNodFErQkYzWnhaWXZsQ29OT0U5cVFHSmY5Qi9BU0ZocDROR1RDdC9GWkJXK0tQUnRpWDJOblpHRGZnNXZpYURhWmZvcTJ2bWJVVG5NNDg9/Carte_Blanq_-_33_Max_Verstappen_(SkySound.cc).mp3", start: 60 },
+  { title: "Kicau Mania", artist: "Trio Hanes", url: "https://fine.sunproxy.net/file/dGpCeDJ4aHhQTnZIb1JEYUd5LytMUWM0WTNoODNodFErQkYzWnhaWXZsQ29OT0U5cVFHSmY5Qi9BU0ZocDROR3EvUnlkYzR0ZnVyMmlpOHVKRXViTmZTWHdmSHhKWjNwa3dYTE5vSDNLS0U9/Trio_Hanes_-_Kicau_Mania_(SkySound.cc).mp3", start: 60 },
+  { title: "Body Pata Pata", artist: "Ardya", url: "https://fine.sunproxy.net/file/dGpCeDJ4aHhQTnZIb1JEYUd5LytMUWM0WTNoODNodFErQkYzWnhaWXZsQ29OT0U5cVFHSmY5Qi9BU0ZocDROR0RIbHFybHZJNUxlMm95TXRvN2NZUU0wVllqVUxJTWh2WFNxZDBjMllReXM9/Ardya_-_Body_Pata_Pata_(SkySound.cc).mp3", start: 60 },
+  { title: "Gadis Manis Kalimantan", artist: "Diva Hani", url: "https://fine.sunproxy.net/file/dGpCeDJ4aHhQTnZIb1JEYUd5LytMUWM0WTNoODNodFErQkYzWnhaWXZsQ29OT0U5cVFHSmY5Qi9BU0ZocDROR0lpMzZPOXJCS1RHNFlnYkJHM2JySnRlY01CS2xcounterf/Diva_Hani_-_Gadis_Manis_Kalimantan_(SkySound.cc).mp3", start: 60 },
+  { title: "Rungkad", artist: "Royal Music Happy Asmara feat. The Saxo Brothers", url: "https://fine.sunproxy.net/file/dGpCeDJ4aHhQTnZIb1JEYUd5LytMUWM0WTNoODNodFErQkYzWnhaWXZsQ29OT0U5cVFHSmY5Qi9BU0ZocDRORzc2a2o2d3VXcGYwNFRoS1hSa0R2WVE1cnlUMXJiTzlQSEtJT0Y4dGRSb289/Royal_Music_Happy_Asmara_feat._The_Saxo_Brothers_-_Rungkad_(SkySound.cc).mp3", start: 60 },
 ];
 
 const SONG_DURATION = 30;
