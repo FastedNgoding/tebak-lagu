@@ -278,6 +278,8 @@ body {
 
 <audio id="audio-el" preload="none"></audio>
 
+<button id="fs-btn" onclick="toggleFullscreen()" title="Fullscreen" style="position:fixed;bottom:16px;right:16px;z-index:9999;width:46px;height:46px;background:#0A0A0A;color:#FFE500;border:3px solid #0A0A0A;box-shadow:4px 4px 0 #FF3B30;cursor:pointer;font-size:22px;display:flex;align-items:center;justify-content:center;transition:box-shadow 0.07s,transform 0.07s;">⛶</button>
+
 <script>
 const SONGS = [
   { title: "The Fate Of Ophelia", artist: "Taylor Swift", url: "https://fine.sunproxy.net/file/dGpCeDJ4aHhQTnZIb1JEYUd5LytMUWM0WTNoODNodFErQkYzWnhaWXZsQ29OT0U5cVFHSmY5Qi9BU0ZocDROR1JjaCt2VzNwUm1vTTNPN3UvZWpLR2ZYNnZlMStObFdDNlpmUlVKc24vd2M9/Taylor_Swift_-_The_Fate_Of_Ophelia_(SkySound.cc).mp3", start: 53 },
@@ -724,8 +726,8 @@ function scoreGuess(guess, title) {
   const g = normalize(guess);
   const t = normalize(title);
   if (g === t) return { pts: 10, label: "SEMPURNA!", type: "correct" };
-  if (t.includes(g) && g.length >= 3) return { pts: 10, label: "TEPAT!", type: "correct" };
-  if (g.includes(t) && t.length >= 3) return { pts: 10, label: "TEPAT!", type: "correct" };
+  if (t.includes(g) && g.length >= 3) return { pts: 5, label: "MENDEKATI!", type: "near" };
+  if (g.includes(t) && t.length >= 3) return { pts: 5, label: "MENDEKATI!", type: "near" };
   const dist = levenshtein(g, t);
   const similarity = 1 - dist / Math.max(g.length, t.length);
   if (similarity >= 0.6) return { pts: 5, label: "MENDEKATI!", type: "near" };
@@ -779,6 +781,20 @@ function setBuzzEnabled(p1, p2) {
   document.getElementById('buzz-p1').disabled = !p1;
   document.getElementById('buzz-p2').disabled = !p2;
 }
+
+function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(() => {});
+  } else {
+    document.exitFullscreen().catch(() => {});
+  }
+}
+
+document.addEventListener('fullscreenchange', () => {
+  const btn = document.getElementById('fs-btn');
+  btn.textContent = document.fullscreenElement ? '✕' : '⛶';
+  btn.title = document.fullscreenElement ? 'Keluar Fullscreen' : 'Fullscreen';
+});
 </script>
 </body>
 </html>
