@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BATTLE TEBAK LAGU</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Space Mono', monospace;
+  background: #FFFDE7;
+  color: #0A0A0A;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+.bebas { font-family: 'Bebas Neue', sans-serif; }
+.brutal-box { border: 4px solid #0A0A0A; box-shadow: 6px 6px 0 #0A0A0A; }
+.brutal-btn {
+  border: 4px solid #0A0A0A;
+  box-shadow: 5px 5px 0 #0A0A0A;
+  cursor: pointer;
+  transition: box-shadow 0.07s, transform 0.07s;
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.05em;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+.brutal-btn:active { box-shadow: 1px 1px 0 #0A0A0A; transform: translate(4px, 4px); }
+.brutal-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none !important; box-shadow: 5px 5px 0 #0A0A0A !important; }
+.brutal-input {
+  border: 3px solid #0A0A0A;
+  font-family: 'Space Mono', monospace;
+  background: #FFF;
+  outline: none;
+  box-shadow: 4px 4px 0 #0A0A0A;
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 16px;
+}
+.brutal-input:focus { box-shadow: 6px 6px 0 #FF3B30; border-color: #FF3B30; }
+.marquee-wrap { overflow: hidden; white-space: nowrap; background: #0A0A0A; }
+.marquee-inner { display: inline-block; animation: marquee 20s linear infinite; color: #FFE500; font-size: 13px; font-weight: 700; letter-spacing: 0.15em; padding: 8px 0; }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.screen { display: none; }
+.screen.active { display: block; }
+.progress-track { height: 16px; border: 3px solid #0A0A0A; background: #fff; overflow: hidden; }
+.progress-fill { height: 100%; transition: width 0.25s linear; }
+.waveform { display: flex; align-items: center; gap: 4px; height: 48px; }
+.wave-bar { width: 5px; background: #0A0A0A; border-radius: 3px; animation: wave 0.7s ease-in-out infinite; }
+@keyframes wave { 0%, 100% { height: 5px; } 50% { height: 40px; } }
+.buzz-btn {
+  width: 100%;
+  border-radius: 0;
+  font-size: clamp(22px, 5vw, 30px);
+  padding: 20px 10px;
+  border: 4px solid #0A0A0A;
+  cursor: pointer;
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.08em;
+  transition: box-shadow 0.07s, transform 0.07s;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  line-height: 1.2;
+}
+.buzz-btn:active { transform: translate(5px, 5px) !important; box-shadow: 1px 1px 0 #0A0A0A !important; }
+.buzz-btn:disabled { opacity: 0.28; cursor: not-allowed; transform: none !important; }
+.buzz-p1 { background: #FFE500; box-shadow: 6px 6px 0 #0A0A0A; color: #0A0A0A; }
+.buzz-p2 { background: #0057FF; box-shadow: 6px 6px 0 #0A0A0A; color: #FFF; }
+.buzz-p1.active-buzz { animation: buzzPop 0.35s ease; background: #FF3B30; color: #fff; }
+.buzz-p2.active-buzz { animation: buzzPop 0.35s ease; background: #FF3B30; color: #fff; }
+@keyframes buzzPop { 0% { transform: scale(1); } 40% { transform: scale(1.07) translate(-2px,-2px); } 100% { transform: scale(1); } }
+.answer-box { animation: slideIn 0.3s ease forwards; }
+@keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+.pop { animation: pop 0.3s ease; }
+@keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.18); } 100% { transform: scale(1); } }
+.result-reveal { animation: revealAnim 0.4s ease forwards; }
+@keyframes revealAnim { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+.badge-correct { background: #00C851; color: #fff; border: 3px solid #0A0A0A; }
+.badge-near    { background: #FFE500; color: #0A0A0A; border: 3px solid #0A0A0A; }
+.badge-wrong   { background: #FF3B30; color: #fff; border: 3px solid #0A0A0A; }
+.badge-skip    { background: #888; color: #fff; border: 3px solid #0A0A0A; }
+.player-card { border: 4px solid #0A0A0A; }
+.pc1 { background: #FFE500; box-shadow: 5px 5px 0 #0A0A0A; }
+.pc2 { background: #0057FF; color: #fff; box-shadow: 5px 5px 0 #0A0A0A; }
+.countdown-ring { font-size: 52px; font-family: 'Bebas Neue', sans-serif; line-height: 1; animation: countPulse 1s ease infinite; }
+@keyframes countPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+.shake { animation: shake 0.35s ease; }
+@keyframes shake { 0%,100% { transform: translateX(0); } 20% { transform: translateX(-8px); } 40% { transform: translateX(8px); } 60% { transform: translateX(-5px); } 80% { transform: translateX(5px); } }
+</style>
+</head>
+<body>
+
+<div class="marquee-wrap">
+  <div class="marquee-inner">
+    &nbsp;⚡ BATTLE TEBAK LAGU ⚡ TEKAN TOMBOL SECEPAT KILAT ⚡ SIAPA PALING HAFAL? ⚡ DUEL MUSIKAL BRUTAL ⚡
+    &nbsp;⚡ BATTLE TEBAK LAGU ⚡ TEKAN TOMBOL SECEPAT KILAT ⚡ SIAPA PALING HAFAL? ⚡ DUEL MUSIKAL BRUTAL ⚡
+  </div>
+</div>
+
+<!-- ====== INTRO ====== -->
+<div id="screen-intro" class="screen active px-4 py-8" style="max-width:600px;margin:0 auto;">
+  <div class="text-center mb-8">
+    <div class="bebas leading-none" style="font-size:clamp(64px,16vw,120px);">BATTLE</div>
+    <div class="bebas leading-none" style="font-size:clamp(40px,11vw,80px);color:#FF3B30;">TEBAK LAGU</div>
+    <div class="bebas tracking-[0.3em] mt-1 opacity-50" style="font-size:16px;">BUZZ & ANSWER EDITION</div>
+  </div>
+
+  <div class="brutal-box bg-white p-5 mb-4">
+    <div class="bebas mb-3" style="font-size:22px;">PEMAIN 1 <span style="color:#FF3B30;">(TOMBOL KIRI)</span></div>
+    <input id="p1-name" class="brutal-input" type="text" placeholder="Nama Pemain 1..." maxlength="20">
+  </div>
+  <div class="brutal-box bg-white p-5 mb-5">
+    <div class="bebas mb-3" style="font-size:22px;">PEMAIN 2 <span style="color:#0057FF;">(TOMBOL KANAN)</span></div>
+    <input id="p2-name" class="brutal-input" type="text" placeholder="Nama Pemain 2..." maxlength="20">
+  </div>
+
+  <div class="brutal-box p-4 mb-6" style="background:#FFE500;">
+    <div class="bebas mb-2" style="font-size:20px;">CARA MAIN</div>
+    <div style="font-size:13px;line-height:2.1;">
+      🎵 Lagu diputar selama <strong>30 detik</strong><br>
+      ⚡ Tekan tombolmu (BUZZ!) secepat mungkin<br>
+      ✍️ Yang buzz dapat <strong>10 detik</strong> untuk jawab judul lagu<br>
+      ❌ Salah / timeout → lagu lanjut, pemain lain bisa buzz<br>
+      ✅ Benar = <strong>10 POIN</strong> &nbsp;|&nbsp; Mendekati = <strong>5 POIN</strong><br>
+      💀 Salah atau tidak jawab = <strong>0 POIN</strong><br>
+      🎯 Total <strong>8 ronde</strong> — siapa poin tertinggi menang!
+    </div>
+  </div>
+
+  <button class="brutal-btn w-full py-5 bg-black text-white bebas" style="font-size:26px;box-shadow:7px 7px 0 #FF3B30;" onclick="startGame()">
+    ⚡ MULAI BATTLE!
+  </button>
+</div>
+
+<!-- ====== GAME ====== -->
+<div id="screen-game" class="screen" style="max-width:600px;margin:0 auto;padding:12px 14px;">
+
+  <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:10px;margin-bottom:12px;align-items:center;">
+    <div class="player-card pc1 p-3 text-center">
+      <div class="bebas leading-none" style="font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" id="hd-p1-name">P1</div>
+      <div class="bebas leading-none" id="hd-p1-score" style="font-size:48px;">0</div>
+      <div style="font-size:10px;opacity:0.6;font-weight:700;">POIN</div>
+    </div>
+    <div class="brutal-box bg-white text-center px-3 py-2" style="min-width:64px;">
+      <div style="font-size:10px;opacity:0.5;font-weight:700;letter-spacing:0.1em;">RONDE</div>
+      <div class="bebas leading-none" style="font-size:32px;" id="hd-round">1/8</div>
+    </div>
+    <div class="player-card pc2 p-3 text-center">
+      <div class="bebas leading-none" style="font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" id="hd-p2-name">P2</div>
+      <div class="bebas leading-none" id="hd-p2-score" style="font-size:48px;">0</div>
+      <div style="font-size:10px;opacity:0.6;font-weight:700;">POIN</div>
+    </div>
+  </div>
+
+  <div class="brutal-box bg-white p-4 mb-3">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+      <div class="bebas" style="font-size:16px;letter-spacing:0.08em;">NOW PLAYING</div>
+      <div id="waveform-area" class="waveform" style="display:none;">
+        <div class="wave-bar" style="animation-delay:0s;"></div>
+        <div class="wave-bar" style="animation-delay:0.1s;"></div>
+        <div class="wave-bar" style="animation-delay:0.2s;"></div>
+        <div class="wave-bar" style="animation-delay:0.3s;"></div>
+        <div class="wave-bar" style="animation-delay:0.15s;"></div>
+        <div class="wave-bar" style="animation-delay:0.05s;"></div>
+        <div class="wave-bar" style="animation-delay:0.25s;"></div>
+        <div class="wave-bar" style="animation-delay:0.35s;"></div>
+      </div>
+    </div>
+    <div style="background:#f0f0f0;border:3px solid #0A0A0A;height:68px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;">
+      <div class="bebas" id="song-status-text" style="font-size:17px;color:#999;letter-spacing:0.1em;text-align:center;padding:0 10px;">SIAP...</div>
+    </div>
+    <div class="progress-track mb-1">
+      <div class="progress-fill" id="song-progress" style="width:0%;background:#0A0A0A;"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:11px;font-weight:700;margin-top:3px;">
+      <span id="time-elapsed">0s / 30s</span>
+      <span id="phase-label" style="opacity:0.5;letter-spacing:0.1em;">—</span>
+    </div>
+  </div>
+
+  <!-- BUZZ BUTTONS -->
+  <div id="buzz-section" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+    <button class="buzz-btn buzz-p1" id="buzz-p1" onclick="playerBuzz(1)" disabled>
+      ⚡ BUZZ!<br>
+      <span style="font-size:13px;opacity:0.75;display:block;margin-top:2px;" id="buzz-p1-label">PEMAIN 1</span>
+    </button>
+    <button class="buzz-btn buzz-p2" id="buzz-p2" onclick="playerBuzz(2)" disabled>
+      ⚡ BUZZ!<br>
+      <span style="font-size:13px;opacity:0.75;display:block;margin-top:2px;" id="buzz-p2-label">PEMAIN 2</span>
+    </button>
+  </div>
+
+  <!-- ANSWER SECTION -->
+  <div id="answer-section" style="display:none;" class="answer-box">
+    <div id="answering-banner" class="bebas text-center py-2 mb-3" style="font-size:20px;border:4px solid #0A0A0A;color:#fff;letter-spacing:0.08em;">
+      ⚡ <span id="answering-who"></span> MENJAWAB! ⚡
+    </div>
+    <div style="background:#fff;border:3px solid #0A0A0A;padding:10px 14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;">
+      <div class="countdown-ring" id="answer-countdown" style="color:#FF3B30;min-width:52px;text-align:center;">10</div>
+      <div style="flex:1;">
+        <div class="progress-track">
+          <div class="progress-fill" id="answer-progress" style="width:100%;background:#FF3B30;"></div>
+        </div>
+        <div style="font-size:11px;margin-top:4px;font-weight:700;opacity:0.55;">WAKTU MENJAWAB</div>
+      </div>
+    </div>
+    <input id="answer-input" class="brutal-input mb-3" type="text" placeholder="Tulis judul lagu di sini..." maxlength="80" onkeydown="if(event.key==='Enter')submitAnswer()">
+    <button class="brutal-btn w-full py-4 bg-black text-white bebas" style="font-size:22px;" onclick="submitAnswer()">
+      🔒 KUNCI JAWABAN
+    </button>
+  </div>
+
+  <!-- RESULT SECTION -->
+  <div id="result-section" style="display:none;">
+    <div class="brutal-box bg-white p-4 mb-3 result-reveal">
+      <div class="bebas mb-3" style="font-size:20px;">HASIL RONDE <span id="res-round-num"></span></div>
+      <div style="border:4px solid #0A0A0A;background:#FFE500;padding:12px;margin-bottom:12px;">
+        <div style="font-size:10px;font-weight:700;opacity:0.6;letter-spacing:0.1em;margin-bottom:2px;">JUDUL ASLI</div>
+        <div class="bebas" style="font-size:26px;" id="res-song-title"></div>
+        <div style="font-size:13px;opacity:0.65;" id="res-song-artist"></div>
+      </div>
+      <div id="res-buzzed-info" style="font-size:12px;padding:8px 10px;border:2px dashed #aaa;background:#f9f9f9;margin-bottom:12px;"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div id="res-p1-box" style="padding:12px;border:3px solid #0A0A0A;">
+          <div class="bebas" style="font-size:13px;margin-bottom:4px;" id="res-p1-name"></div>
+          <div style="font-size:12px;font-style:italic;margin-bottom:8px;min-height:18px;word-break:break-word;" id="res-p1-guess"></div>
+          <div class="bebas px-2 py-1 inline-block" style="font-size:12px;margin-bottom:4px;" id="res-p1-badge"></div>
+          <div class="bebas" style="font-size:30px;" id="res-p1-pts"></div>
+        </div>
+        <div id="res-p2-box" style="padding:12px;border:3px solid #0A0A0A;">
+          <div class="bebas" style="font-size:13px;margin-bottom:4px;" id="res-p2-name"></div>
+          <div style="font-size:12px;font-style:italic;margin-bottom:8px;min-height:18px;word-break:break-word;" id="res-p2-guess"></div>
+          <div class="bebas px-2 py-1 inline-block" style="font-size:12px;margin-bottom:4px;" id="res-p2-badge"></div>
+          <div class="bebas" style="font-size:30px;" id="res-p2-pts"></div>
+        </div>
+      </div>
+    </div>
+    <button class="brutal-btn w-full py-4 bg-black text-white bebas" style="font-size:22px;" onclick="nextRound()">
+      <span id="next-btn-label">RONDE BERIKUTNYA →</span>
+    </button>
+  </div>
+</div>
+
+<!-- ====== FINAL ====== -->
+<div id="screen-final" class="screen px-4 py-8" style="max-width:600px;margin:0 auto;">
+  <div class="text-center mb-5">
+    <div class="bebas" style="font-size:clamp(50px,13vw,90px);color:#FF3B30;line-height:1;">GAME OVER!</div>
+  </div>
+  <div id="winner-banner" class="brutal-box p-6 text-center mb-5">
+    <div class="bebas opacity-50 mb-1" style="font-size:15px;letter-spacing:0.2em;">PEMENANG</div>
+    <div class="bebas" id="winner-name" style="font-size:52px;line-height:1.1;"></div>
+    <div style="font-size:13px;margin-top:6px;font-weight:700;" id="winner-sub"></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+    <div class="player-card pc1 p-4 text-center">
+      <div class="bebas" style="font-size:15px;" id="fin-p1-name"></div>
+      <div class="bebas" style="font-size:64px;line-height:1;" id="fin-p1-score"></div>
+      <div style="font-size:10px;font-weight:700;opacity:0.6;">POIN TOTAL</div>
+    </div>
+    <div class="player-card pc2 p-4 text-center">
+      <div class="bebas" style="font-size:15px;" id="fin-p2-name"></div>
+      <div class="bebas" style="font-size:64px;line-height:1;" id="fin-p2-score"></div>
+      <div style="font-size:10px;font-weight:700;opacity:0.6;">POIN TOTAL</div>
+    </div>
+  </div>
+  <div class="brutal-box bg-white p-4 mb-5">
+    <div class="bebas mb-3" style="font-size:18px;">REKAP SEMUA RONDE</div>
+    <div id="final-recap" style="font-size:12px;"></div>
+  </div>
+  <button class="brutal-btn w-full py-5 bg-black text-white bebas" style="font-size:24px;box-shadow:7px 7px 0 #FF3B30;" onclick="resetGame()">
+    ⚡ MAIN LAGI!
+  </button>
+</div>
+
+<audio id="audio-el" preload="none"></audio>
+
+<button id="fs-btn" onclick="toggleFullscreen()" title="Fullscreen" style="position:fixed;bottom:16px;right:16px;z-index:9999;width:46px;height:46px;background:#0A0A0A;color:#FFE500;border:3px solid #0A0A0A;box-shadow:4px 4px 0 #FF3B30;cursor:pointer;font-size:22px;display:flex;align-items:center;justify-content:center;transition:box-shadow 0.07s,transform 0.07s;">⛶</button>
+
+<script>
+
+const SONGS = [
+  { title: "The Fate Of Ophelia", artist: "Taylor Swift", url: "https://fine.sunproxy.net/file/dGpCeDJ4aHhQTnZIb1JEYUd5LytMUWM0WTNoODNodFErQkYzWnhaWXZsQ29OT0U5cVFHSmY5Qi9BU0ZocDROR1JjaCt2VzNwUm1vTTNPN3UvZWpLR2ZYNnZlMStObFdDNlpmUlVKc24vd2M9/Taylor_Swift_-_The_Fate_Of_Ophelia_(SkySound.cc).mp3", start: 53 },
+  { title: "Treat Your Better", artist: "Shawn mendess", url: "https://cs1.mp3.pm/download/162537826/R21HZngrVG1DMW55U2FlVzdvYk12ZmNOOVRvVUprY0lYUm1IaXR1OUlyUzlTSk5hVzhxTVordVFQdHd3M2ZKanZieW9yUEs5QThaMHVZRFZxSjgvY05GdzMyYXc1Y2tHSGxoZExQVndBV28zbkk2SzEzM1pKUHhLODhjOGppMWM/shawn_mendes_-_treat_you_better_-_shawn_mendes_-_treat_you_better_(mp3.pm).mp3", start: 10 },
+  { title: "We Can't Be Frieds", artist: "Ariana Grande", url: "https://fine.sunproxy.net/file/dGpCeDJ4aHhQTnZIb1JEYUd5LytMUWM0WTNoODNodFErQkYzWnhaWXZsQ29OT0U5cVFHSmY5Qi9BU0ZocDROR1U1d1c4K290RjYwLzJyVjFFWGkwck5HcW5CRDBuUHFTQ3lBRlNheS9jb289/Ariana_Grande_-_We_Can_t_Be_Friends_Wait_For_Your_Love_2024_(SkySound.cc).mp3", start: 40 },
+  { title: "Saturn", artist: "SZA", url: "https://fine.sunproxy.net/file/dGpCeDJ4aHhQTnZIb1JEYUd5LytMUWM0WTNoODNodFErQkYzWnhaWXZsQ29OT0U5cVFHSmY5Qi9BU0ZocDROR0ZBbGR4em9JYVFyTHRkZjJMNHlRRXZpUlVLRWIzU0lKMzhjUWMxMDdqWUk9/SZA_-_Saturn_Acapella_(SkySound.cc).mp3", start: 55 },
+  { title: "Cruel Summer", artist: "Taylor Swift", url: "https://s3.ustatik.com/audio.com.audio/transcoding/51/05/1824617280320551-1824617280488862-1824617285027407.mp3?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=F0E8U41NBMMW3Y027UTJ%2F20260519%2Feu-central-1%2Fs3%2Faws4_request&X-Amz-Date=20260519T033120Z&X-Amz-SignedHeaders=host&X-Amz-Expires=518400&X-Amz-Signature=e2776bd90846eaba69b1dfc57e50e10de069750383505d26c789e3ee97e54aa4", start: 122 },
+  { title: "End Of Beginning", artist: "Djo", url: "https://fine.sunproxy.net/file/dGpCeDJ4aHhQTnZIb1JEYUd5LytMUWM0WTNoODNodFErQkYzWnhaWXZsQ29OT0U5cVFHSmY5Qi9BU0ZocDROR0phZERDb3JhZHcvYUlqSlgzdTk1NW5NVHY4a0hscmh3ZnpTSjVjeXd0VFE9/Djo_-_End_Of_Beginning_(SkySound.cc).mp3", start: 8 },
+  { title: "Jangan Paksa Rindu (beda)", artist: "Ifan Seventeen", url: "sounds/jangan-paksa-rindu.mp3", start: 90 },
+  { title: "Dari Planet Lain", artist: "Sal Priadi", url: "sounds/dari-planet-lain.mp3", start: 60 },
+  { title: "Satu Bulan", artist: "Bernadya", url: "sounds/satu-bulan.mp3", start: 8 },
+  { title: "Pesan Terakhir", artist: "Lyodra", url: "sounds/pesan-terakhir.mp3", start: 55 },
+  { title: "Rayuan Perempuan Gila", artist: "Nadin Amizah", url: "sounds/rayuan-perempuan-gila.mp3", start: 60 },
+
+  { title: "Ode to The Nameless Martyr", artist: "Wuthering Waves", url: "https://fine.sunproxy.net/file/dGpCeDJ4aHhQTnZIb1JEYUd5LytMUWM0WTNoODNodFErQkYzWnhaWXZsQ29OT0U5cVFHSmY5Qi9BU0ZocDROR0c4b1ZTTFNJV25uRm5lWk1FbmZJL2VwOFlTWmp2eWNaZGI5R0J6dmNwZ3M9/jixwang_Thena_A_Tarokiki_VISION_SOUND_-_Ode_to_the_Nameless_Martyr_(SkySound.cc).mp3", start: 60 },
+  { title: "Against The Tide", artist: "Wuthering Waves", url: "https://fine.sunproxy.net/file/dGpCeDJ4aHhQTnZIb1JEYUd5LytMUWM0WTNoODNodFErQkYzWnhaWXZsQ29OT0U5cVFHSmY5Qi9BU0ZocDROR3g0S0srZElvbmdreDA5N01velFJdEFEZFJPb3VyYTZKeWdNemhyZU1sR009/Wuthering_Waves_-_Wuthering_Waves_EP2.4_Cartethyia_-_Against_the_Tide_(SkySound.cc).mp3", start: 60 },
+  { title: "Elusive Seas", artist: "Wuthering Waves", url: "https://fine.sunproxy.net/file/dGpCeDJ4aHhQTnZIb1JEYUd5LytMUWM0WTNoODNodFErQkYzWnhaWXZsQ29OT0U5cVFHSmY5Qi9BU0ZocDROR0lWWVEzOEE0a09wN0dnZEViN2xyVWNUWFJBS0tSdU9ia1pacEdYbEdLTk09/Wuthering_Waves_-_Wuthering_Waves_EP2.2_Cantarella_-_Elusive_Seas_(SkySound.cc).mp3", start: 60 },
+  { title: "Ice and Blood", artist: "Vanguard Sound GhostFinal feat. Kinoko", url: "https://fine.sunproxy.net/file/dGpCeDJ4aHhQTnZIb1JEYUd5LytMUWM0WTNoODNodFErQkYzWnhaWXZsQ29OT0U5cVFHSmY5Qi9BU0ZocDROR2NFaXZCRDUvTHVCc1k5c0krU0VpQ3JzQ0JZTFU4QUkzRTB0QWUyZUdIK3c9/Vanguard_Sound_GhostFinal_-2064_feat._Kinoko_-_Ice_Blood_(SkySound.cc).mp3", start: 60 },
+  { title: "Target for Love (EN Version)", artist: "Lee Jin Ah", url: "https://fine.sunproxy.net/file/dGpCeDJ4aHhQTnZIb1JEYUd5LytMUWM0WTNoODNodFErQkYzWnhaWXZsQ29OT0U5cVFHSmY5Qi9BU0ZocDROR2ZhUWtobG4vdkZ6N2xXN3hPMVRHV3JxcURPUE9XUk5oS0p5VU9RS2xLM289/Lee_Jin_Ah_-_Target_for_Love_EN_version_(SkySound.cc).mp3", start: 60 },
+  { title: "Hujan", artist: "Utopia", url: "https://fine.sunproxy.net/file/dGpCeDJ4aHhQTnZIb1JEYUd5LytMU1lDeGZxc0cxL1hZNURYOUp5TFNkUDIwcUpHcXVJcGFMNm0zeUUxanV4SVZmdkt4aE84M0twYnJ5TFRpVTF6NzFtcjhqOUs0Vms0ZEJyazUrL1NTc3c9/Utopia_-_Hujan_(SkySound.cc).mp3", start: 70 },
+  { title: "Akad", artist: "Payung Teduh", url: "https://fine.sunproxy.net/file/dGpCeDJ4aHhQTnZIb1JEYUd5LytMUWM0WTNoODNodFErQkYzWnhaWXZsQ29OT0U5cVFHSmY5Qi9BU0ZocDROR0FVOU9pbWtXcHZPTGRTN2Uyd0dTaXdPd1Y0bW4veFcrYlFiVzZ4ajgzWDg9/Payung_Teduh_-_Payung_Teduh_-_Akad_Official_Music_Video_(SkySound.cc).mp3", start: 60 },
+  { title: "Tuan", artist: ".Feast", url: "https://fine.sunproxy.net/file/dGpCeDJ4aHhQTnZIb1JEYUd5LytMUWM0WTNoODNodFErQkYzWnhaWXZsQ29OT0U5cVFHSmY5Qi9BU0ZocDROR29LZkc2bHpWUU9SbDUrWUpMV1FDUTNLUExPMXowL2g1QVNJQ1BkcmlmS0k9/.Feast_-_o_Tuan_(SkySound.cc).mp3", start: 60 },
+  { title: "Baby One More Time", artist: "Britney Spears", url: "https://fine.sunproxy.net/file/dGpCeDJ4aHhQTnZIb1JEYUd5LytMUWM0WTNoODNodFErQkYzWnhaWXZsQ29OT0U5cVFHSmY5Qi9BU0ZocDROR0dKMGJiNWlyZ3FkaWtjVEpycEF3VDhxWkxxMHhUWFozTEZGMTZ2OFZrSWc9/Britney_Spears_-_...Baby_One_More_Time_(SkySound.cc).mp3", start: 60 },
+  { title: "Max Verstappen", artist: "Carte Blanq", url: "https://fine.sunproxy.net/file/dGpCeDJ4aHhQTnZIb1JEYUd5LytMUWM0WTNoODNodFErQkYzWnhaWXZsQ29OT0U5cVFHSmY5Qi9BU0ZocDROR1RDdC9GWkJXK0tQUnRpWDJOblpHRGZnNXZpYURhWmZvcTJ2bWJVVG5NNDg9/Carte_Blanq_-_33_Max_Verstappen_(SkySound.cc).mp3", start: 60 },
+  { title: "Kicau Mania", artist: "Trio Hanes", url: "https://fine.sunproxy.net/file/dGpCeDJ4aHhQTnZIb1JEYUd5LytMUWM0WTNoODNodFErQkYzWnhaWXZsQ29OT0U5cVFHSmY5Qi9BU0ZocDROR3EvUnlkYzR0ZnVyMmlpOHVKRXViTmZTWHdmSHhKWjNwa3dYTE5vSDNLS0U9/Trio_Hanes_-_Kicau_Mania_(SkySound.cc).mp3", start: 75 },
+  { title: "Body Pata Pata", artist: "Ardya", url: "https://fine.sunproxy.net/file/dGpCeDJ4aHhQTnZIb1JEYUd5LytMUWM0WTNoODNodFErQkYzWnhaWXZsQ29OT0U5cVFHSmY5Qi9BU0ZocDROR0RIbHFybHZJNUxlMm95TXRvN2NZUU0wVllqVUxJTWh2WFNxZDBjMllReXM9/Ardya_-_Body_Pata_Pata_(SkySound.cc).mp3", start: 60 },
+  { title: "Gadis Manis Kalimantan", artist: "Diva Hani", url: "https://fine.sunproxy.net/file/dGpCeDJ4aHhQTnZIb1JEYUd5LytMU1lDeGZxc0cxL1hZNURYOUp5TFNkT2hGZFpSdCtZN1Y0ek9YQnBqdDQrSjVFc0lIVWt0S2NrQXRDRkpIajVReUlVbXR3cVpacDczWnNhWTFqdEs1VDg9/Diva_Hani_-_Gadis_Manis_Kalimantan_(SkySound.cc).mp3", start: 51 },
+  { title: "Rungkad", artist: "Royal Music Happy Asmara feat. The Saxo Brothers", url: "https://fine.sunproxy.net/file/dGpCeDJ4aHhQTnZIb1JEYUd5LytMUWM0WTNoODNodFErQkYzWnhaWXZsQ29OT0U5cVFHSmY5Qi9BU0ZocDRORzc2a2o2d3VXcGYwNFRoS1hSa0R2WVE1cnlUMXJiTzlQSEtJT0Y4dGRSb289/Royal_Music_Happy_Asmara_feat._The_Saxo_Brothers_-_Rungkad_(SkySound.cc).mp3", start: 60 },
+];
+  
+const SONG_DURATION = 30;
+const ANSWER_TIME   = 10;
+const TOTAL_ROUNDS  = 8;
+
+let S = {
+  p1: "PEMAIN 1", p2: "PEMAIN 2",
+  p1Score: 0, p2Score: 0,
+  round: 0,
+  songs: [],
+  currentSong: null,
+  phase: "idle",
+  songElapsed: 0,
+  songTimer: null,
+  answerTimer: null,
+  answerTimeLeft: 0,
+  buzzedPlayer: 0,
+  roundGuesses: { 1: null, 2: null },
+  roundResults: { 1: null, 2: null },
+  roundBuzzOrder: [],
+  recap: [],
+};
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function startGame() {
+  const n1 = document.getElementById('p1-name').value.trim();
+  const n2 = document.getElementById('p2-name').value.trim();
+  S.p1 = (n1 || "PEMAIN 1").toUpperCase();
+  S.p2 = (n2 || "PEMAIN 2").toUpperCase();
+  S.p1Score = 0;
+  S.p2Score = 0;
+  S.round = 0;
+  S.recap = [];
+  S.songs = shuffle(SONGS).slice(0, TOTAL_ROUNDS);
+
+  document.getElementById('hd-p1-name').textContent = S.p1;
+  document.getElementById('hd-p2-name').textContent = S.p2;
+  document.getElementById('buzz-p1-label').textContent = S.p1;
+  document.getElementById('buzz-p2-label').textContent = S.p2;
+  updateScores();
+  showScreen('screen-game');
+  startRound();
+}
+
+function startRound() {
+  S.round++;
+  S.phase = "playing";
+  S.songElapsed = 0;
+  S.buzzedPlayer = 0;
+  S.roundGuesses = { 1: null, 2: null };
+  S.roundResults = { 1: null, 2: null };
+  S.roundBuzzOrder = [];
+
+  document.getElementById('hd-round').textContent = S.round + '/' + TOTAL_ROUNDS;
+  document.getElementById('answer-section').style.display = 'none';
+  document.getElementById('result-section').style.display = 'none';
+  document.getElementById('buzz-section').style.display = 'grid';
+
+  const song = S.songs[S.round - 1];
+  S.currentSong = song;
+
+  setSongStatus('♪ MEMUAT LAGU...', '#999');
+  setPhaseLabel('LOADING');
+  setSongProgress(0);
+  setWaveform(false);
+  setBuzzEnabled(false, false);
+  document.getElementById('time-elapsed').textContent = '0s / 30s';
+
+  const audio = document.getElementById('audio-el');
+  audio.src = song.url;
+  audio.currentTime = song.start || 0;
+
+  const tryPlay = audio.play();
+  if (tryPlay !== undefined) {
+    tryPlay.then(() => beginPlaying()).catch(() => beginPlaying());
+  } else {
+    beginPlaying();
+  }
+}
+
+function beginPlaying() {
+  S.phase = "playing";
+  setSongStatus('♪ ♪ ♪ SEDANG DIPUTAR — SIAP BUZZ! ♪ ♪ ♪', '#FF3B30');
+  setPhaseLabel('PLAYING');
+  setWaveform(true);
+  setBuzzEnabled(true, true);
+
+  clearInterval(S.songTimer);
+  S.songTimer = setInterval(() => {
+    S.songElapsed++;
+    const pct = (S.songElapsed / SONG_DURATION) * 100;
+    setSongProgress(pct);
+    document.getElementById('time-elapsed').textContent = S.songElapsed + 's / ' + SONG_DURATION + 's';
+
+    if (S.songElapsed >= SONG_DURATION) {
+      clearInterval(S.songTimer);
+      endRound();
+    }
+  }, 1000);
+}
+
+function playerBuzz(player) {
+  if (S.phase !== "playing") return;
+  if (S.roundBuzzOrder.includes(player)) return;
+
+  S.phase = "answering";
+  S.buzzedPlayer = player;
+  S.roundBuzzOrder.push(player);
+
+  clearInterval(S.songTimer);
+
+  const audio = document.getElementById('audio-el');
+  audio.pause();
+
+  setWaveform(false);
+  setBuzzEnabled(false, false);
+
+  const btn = document.getElementById('buzz-p' + player);
+  btn.classList.add('active-buzz');
+  setTimeout(() => btn.classList.remove('active-buzz'), 400);
+
+  const who = player === 1 ? S.p1 : S.p2;
+  document.getElementById('answering-who').textContent = who;
+
+  const bannerEl = document.getElementById('answering-banner');
+  bannerEl.style.background = player === 1 ? '#FF3B30' : '#0057FF';
+
+  const answerSection = document.getElementById('answer-section');
+  answerSection.style.display = 'block';
+  answerSection.classList.remove('answer-box');
+  void answerSection.offsetWidth;
+  answerSection.classList.add('answer-box');
+
+  document.getElementById('answer-input').value = '';
+  setTimeout(() => document.getElementById('answer-input').focus(), 100);
+
+  setSongStatus('⏸ JEDA — ' + who + ' MENJAWAB!', player === 1 ? '#FF3B30' : '#0057FF');
+  setPhaseLabel('MENJAWAB');
+
+  startAnswerCountdown();
+}
+
+function startAnswerCountdown() {
+  S.answerTimeLeft = ANSWER_TIME;
+  document.getElementById('answer-countdown').textContent = ANSWER_TIME;
+  document.getElementById('answer-progress').style.width = '100%';
+  document.getElementById('answer-countdown').style.color = '#FF3B30';
+
+  clearInterval(S.answerTimer);
+  S.answerTimer = setInterval(() => {
+    S.answerTimeLeft--;
+    document.getElementById('answer-countdown').textContent = S.answerTimeLeft;
+    const pct = (S.answerTimeLeft / ANSWER_TIME) * 100;
+    document.getElementById('answer-progress').style.width = pct + '%';
+
+    if (S.answerTimeLeft <= 0) {
+      clearInterval(S.answerTimer);
+      submitAnswer();
+    }
+  }, 1000);
+}
+
+function submitAnswer() {
+  if (S.phase !== "answering") return;
+  clearInterval(S.answerTimer);
+
+  const val = document.getElementById('answer-input').value.trim();
+  const player = S.buzzedPlayer;
+  S.roundGuesses[player] = val || null;
+
+  const result = scoreGuess(val, S.currentSong.title);
+  S.roundResults[player] = result;
+
+  document.getElementById('answer-section').style.display = 'none';
+  S.phase = "playing";
+
+  if (result.type === "correct") {
+    finishRoundCorrect(player);
+    return;
+  }
+
+  const other = player === 1 ? 2 : 1;
+  const otherAlreadyBuzzed = S.roundBuzzOrder.includes(other);
+
+  if (otherAlreadyBuzzed) {
+    endRound();
+    return;
+  }
+
+  const remaining = SONG_DURATION - S.songElapsed;
+  if (remaining <= 0) {
+    endRound();
+    return;
+  }
+
+  setSongStatus('♪ LAGU LANJUT! BUZZ SEKARANG! ♪', '#FF3B30');
+  setPhaseLabel('PLAYING');
+  setWaveform(true);
+  setBuzzEnabled(other === 1, other === 2);
+
+  const audio = document.getElementById('audio-el');
+  audio.play().catch(() => {});
+
+  clearInterval(S.songTimer);
+  S.songTimer = setInterval(() => {
+    S.songElapsed++;
+    const pct = (S.songElapsed / SONG_DURATION) * 100;
+    setSongProgress(pct);
+    document.getElementById('time-elapsed').textContent = S.songElapsed + 's / ' + SONG_DURATION + 's';
+
+    if (S.songElapsed >= SONG_DURATION) {
+      clearInterval(S.songTimer);
+      endRound();
+    }
+  }, 1000);
+}
+
+function finishRoundCorrect(correctPlayer) {
+  clearInterval(S.songTimer);
+  clearInterval(S.answerTimer);
+  const audio = document.getElementById('audio-el');
+  audio.pause();
+  audio.src = '';
+  setWaveform(false);
+  setBuzzEnabled(false, false);
+  setSongStatus('✓ JAWABAN BENAR! RONDE SELESAI', '#00C851');
+  setPhaseLabel('SELESAI');
+
+  const other = correctPlayer === 1 ? 2 : 1;
+  if (!S.roundResults[other]) S.roundResults[other] = { pts: 0, label: "TIDAK BUZZ", type: "skip" };
+  if (S.roundGuesses[other] === undefined) S.roundGuesses[other] = null;
+
+  computeAndShowResult();
+}
+
+function endRound() {
+  clearInterval(S.songTimer);
+  clearInterval(S.answerTimer);
+  const audio = document.getElementById('audio-el');
+  audio.pause();
+  audio.src = '';
+  setWaveform(false);
+  setBuzzEnabled(false, false);
+  setSongStatus('⏹ WAKTU HABIS — RONDE SELESAI', '#0A0A0A');
+  setPhaseLabel('SELESAI');
+
+  if (!S.roundResults[1]) {
+    S.roundResults[1] = S.roundGuesses[1]
+      ? scoreGuess(S.roundGuesses[1], S.currentSong.title)
+      : { pts: 0, label: "TIDAK BUZZ", type: "skip" };
+  }
+  if (!S.roundResults[2]) {
+    S.roundResults[2] = S.roundGuesses[2]
+      ? scoreGuess(S.roundGuesses[2], S.currentSong.title)
+      : { pts: 0, label: "TIDAK BUZZ", type: "skip" };
+  }
+
+  computeAndShowResult();
+}
+
+function computeAndShowResult() {
+  S.phase = "result";
+  const r1 = S.roundResults[1];
+  const r2 = S.roundResults[2];
+
+  S.p1Score += r1.pts;
+  S.p2Score += r2.pts;
+
+  S.recap.push({
+    song: S.currentSong,
+    g1: S.roundGuesses[1],
+    g2: S.roundGuesses[2],
+    r1, r2,
+    buzzOrder: [...S.roundBuzzOrder]
+  });
+
+  updateScores();
+
+  document.getElementById('buzz-section').style.display = 'none';
+  const rs = document.getElementById('result-section');
+  rs.style.display = 'block';
+  rs.classList.remove('result-reveal');
+  void rs.offsetWidth;
+  rs.classList.add('result-reveal');
+
+  document.getElementById('res-round-num').textContent = S.round;
+  document.getElementById('res-song-title').textContent = S.currentSong.title;
+  document.getElementById('res-song-artist').textContent = S.currentSong.artist;
+
+  let buzzInfo = '';
+  if (S.roundBuzzOrder.length === 0) {
+    buzzInfo = '⚠ Tidak ada pemain yang menekan buzz pada ronde ini.';
+  } else {
+    buzzInfo = '⚡ Urutan buzz: ' + S.roundBuzzOrder.map(p => p === 1 ? S.p1 : S.p2).join(' → ');
+  }
+  document.getElementById('res-buzzed-info').textContent = buzzInfo;
+
+  document.getElementById('res-p1-name').textContent = S.p1;
+  document.getElementById('res-p2-name').textContent = S.p2;
+  document.getElementById('res-p1-guess').textContent = S.roundGuesses[1] ? '"' + S.roundGuesses[1] + '"' : '(tidak buzz / tidak jawab)';
+  document.getElementById('res-p2-guess').textContent = S.roundGuesses[2] ? '"' + S.roundGuesses[2] + '"' : '(tidak buzz / tidak jawab)';
+
+  applyBadge('res-p1-badge', 'res-p1-box', r1);
+  applyBadge('res-p2-badge', 'res-p2-box', r2);
+  document.getElementById('res-p1-pts').textContent = '+' + r1.pts + ' PTS';
+  document.getElementById('res-p2-pts').textContent = '+' + r2.pts + ' PTS';
+
+  const isLast = S.round >= TOTAL_ROUNDS;
+  document.getElementById('next-btn-label').textContent = isLast ? '🏆 LIHAT HASIL AKHIR!' : 'RONDE BERIKUTNYA →';
+}
+
+function nextRound() {
+  if (S.round >= TOTAL_ROUNDS) {
+    showFinal();
+  } else {
+    startRound();
+  }
+}
+
+function showFinal() {
+  showScreen('screen-final');
+  document.getElementById('fin-p1-name').textContent = S.p1;
+  document.getElementById('fin-p2-name').textContent = S.p2;
+  document.getElementById('fin-p1-score').textContent = S.p1Score;
+  document.getElementById('fin-p2-score').textContent = S.p2Score;
+
+  const banner = document.getElementById('winner-banner');
+  const wName  = document.getElementById('winner-name');
+  const wSub   = document.getElementById('winner-sub');
+  wName.style.color = '#0A0A0A';
+  wSub.style.color  = '#0A0A0A';
+
+  if (S.p1Score > S.p2Score) {
+    banner.style.background = '#FFE500';
+    wName.textContent = S.p1;
+    wSub.textContent = '🏆 JUARA! ' + S.p1Score + ' vs ' + S.p2Score + ' poin';
+  } else if (S.p2Score > S.p1Score) {
+    banner.style.background = '#0057FF';
+    wName.style.color = '#FFF';
+    wSub.style.color  = '#FFF';
+    wName.textContent = S.p2;
+    wSub.textContent = '🏆 JUARA! ' + S.p2Score + ' vs ' + S.p1Score + ' poin';
+  } else {
+    banner.style.background = '#FF3B30';
+    wName.style.color = '#FFF';
+    wSub.style.color  = '#FFF';
+    wName.textContent = 'SERI!';
+    wSub.textContent = '🤝 Sama-sama ' + S.p1Score + ' poin!';
+  }
+
+  const recapEl = document.getElementById('final-recap');
+  recapEl.innerHTML = '';
+  S.recap.forEach((r, i) => {
+    const div = document.createElement('div');
+    div.style.cssText = 'padding:8px 0;border-bottom:1px solid #ccc;';
+    div.innerHTML =
+      '<div style="font-weight:700;">' + (i+1) + '. ' + r.song.title +
+        ' <span style="opacity:0.5;font-weight:400;">— ' + r.song.artist + '</span></div>' +
+      '<div style="opacity:0.7;margin-top:2px;font-size:11px;">' +
+        S.p1 + ': <b>' + (r.g1 || '—') + '</b> <span style="color:' + ptColor(r.r1.pts) + '">(' + r.r1.pts + 'pts)</span> &nbsp;|&nbsp; ' +
+        S.p2 + ': <b>' + (r.g2 || '—') + '</b> <span style="color:' + ptColor(r.r2.pts) + '">(' + r.r2.pts + 'pts)</span>' +
+      '</div>';
+    recapEl.appendChild(div);
+  });
+}
+
+function ptColor(pts) {
+  if (pts === 10) return '#00C851';
+  if (pts === 5)  return '#FF9500';
+  return '#888';
+}
+
+function resetGame() {
+  clearInterval(S.songTimer);
+  clearInterval(S.answerTimer);
+  const audio = document.getElementById('audio-el');
+  audio.pause();
+  audio.src = '';
+  document.getElementById('p1-name').value = '';
+  document.getElementById('p2-name').value = '';
+  showScreen('screen-intro');
+}
+
+function normalize(str) {
+  return str.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, ' ').trim();
+}
+
+function levenshtein(a, b) {
+  const m = a.length, n = b.length;
+  const dp = Array.from({length: m+1}, (_, i) =>
+    Array.from({length: n+1}, (_, j) => i === 0 ? j : j === 0 ? i : 0)
+  );
+  for (let i = 1; i <= m; i++)
+    for (let j = 1; j <= n; j++)
+      dp[i][j] = a[i-1] === b[j-1] ? dp[i-1][j-1] : 1 + Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);
+  return dp[m][n];
+}
+
+function scoreGuess(guess, title) {
+  if (!guess) return { pts: 0, label: "KOSONG", type: "wrong" };
+  const g = normalize(guess);
+  const t = normalize(title);
+  if (g === t) return { pts: 10, label: "SEMPURNA!", type: "correct" };
+  if (t.includes(g) && g.length >= 3) return { pts: 5, label: "MENDEKATI!", type: "near" };
+  if (g.includes(t) && t.length >= 3) return { pts: 5, label: "MENDEKATI!", type: "near" };
+  const dist = levenshtein(g, t);
+  const similarity = 1 - dist / Math.max(g.length, t.length);
+  if (similarity >= 0.6) return { pts: 5, label: "MENDEKATI!", type: "near" };
+  const wt = t.split(' '), wg = g.split(' ');
+  const common = wg.filter(w => w.length > 2 && wt.some(ww => ww.includes(w) || w.includes(ww)));
+  if (common.length >= Math.ceil(wt.length * 0.5)) return { pts: 5, label: "MENDEKATI!", type: "near" };
+  return { pts: 0, label: "SALAH!", type: "wrong" };
+}
+
+function applyBadge(badgeId, boxId, res) {
+  const badge = document.getElementById(badgeId);
+  const box   = document.getElementById(boxId);
+  badge.textContent = res.label;
+  badge.className = 'bebas px-2 py-1 inline-block';
+  badge.style.fontSize = '12px';
+  box.style.background = '';
+  if (res.type === 'correct') { badge.classList.add('badge-correct'); box.style.background = '#E8F5E9'; }
+  else if (res.type === 'near')  { badge.classList.add('badge-near');    box.style.background = '#FFFDE7'; }
+  else if (res.type === 'skip')  { badge.classList.add('badge-skip');    box.style.background = '#f5f5f5'; }
+  else                            { badge.classList.add('badge-wrong');   box.style.background = '#FFEBEE'; }
+}
+
+function updateScores() {
+  const s1 = document.getElementById('hd-p1-score');
+  const s2 = document.getElementById('hd-p2-score');
+  s1.textContent = S.p1Score;
+  s2.textContent = S.p2Score;
+  s1.classList.add('pop'); s2.classList.add('pop');
+  setTimeout(() => { s1.classList.remove('pop'); s2.classList.remove('pop'); }, 300);
+}
+
+function setSongStatus(text, color) {
+  const el = document.getElementById('song-status-text');
+  el.textContent = text;
+  el.style.color = color || '#0A0A0A';
+}
+
+function setPhaseLabel(text) {
+  document.getElementById('phase-label').textContent = text;
+}
+
+function setSongProgress(pct) {
+  document.getElementById('song-progress').style.width = Math.min(pct, 100) + '%';
+}
+
+function setWaveform(show) {
+  document.getElementById('waveform-area').style.display = show ? 'flex' : 'none';
+}
+
+function setBuzzEnabled(p1, p2) {
+  document.getElementById('buzz-p1').disabled = !p1;
+  document.getElementById('buzz-p2').disabled = !p2;
+}
+
+function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(() => {});
+  } else {
+    document.exitFullscreen().catch(() => {});
+  }
+}
+
+document.addEventListener('fullscreenchange', () => {
+  const btn = document.getElementById('fs-btn');
+  btn.textContent = document.fullscreenElement ? '✕' : '⛶';
+  btn.title = document.fullscreenElement ? 'Keluar Fullscreen' : 'Fullscreen';
+});
+</script>
+</body>
+</html>
